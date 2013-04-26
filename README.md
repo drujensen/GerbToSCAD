@@ -5,7 +5,7 @@ Jerrill Johnson from the G+ 3D community provided the idea of using a simple pro
 
 https://www.youtube.com/watch?feature=player_embedded&v=jCzmQLZKNA8#!
 
-This project is to convert a RS-274X extended Gerber Solder Stencil into a SCAD file that can be 3D printed using the process Jerrill presents.  Recommend Single Sided only with lots of room in between components.
+This project is to convert a RS-274X extended Gerber Solder Stencil into a SCAD file that can be 3D printed using the process Jerrill presents.  I Recommend Single Sided with lots of room in between components in your board design.
 
 Credits go to https://github.com/bluecoast/SolderSCAD for a good starting point.
 
