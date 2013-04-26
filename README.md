@@ -5,7 +5,9 @@ Jerrill Johnson from the G+ 3D community provided the idea of using a simple pro
 
 https://www.youtube.com/watch?feature=player_embedded&v=jCzmQLZKNA8#!
 
-This project is to convert a RS-274X extended Gerber Solder Stencil into a SCAD file that can be 3D printed using the process Jerrill presents.  In order to get the right dimensions, you will need to make sure you have plenty of room in your board layout so that you can add the conductive paint to the valleys.  Single Sided only.
+This project is to convert a RS-274X extended Gerber Solder Stencil into a SCAD file that can be 3D printed using the process Jerrill presents.  Recommend Single Sided only with lots of room in between components.
+
+Credits go to https://github.com/bluecoast/SolderSCAD for a good starting point.
 
 Usage: GerbPaintSCAD {inputfile} {optional outputfile}
 
