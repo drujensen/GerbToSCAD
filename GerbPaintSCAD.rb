@@ -27,7 +27,8 @@ aperture_filename = "aperture_primitives.dat"
 
 if ARGV.length > 1
   output_filename = ARGV[1]
-elsif ARGV.length > 0
+end
+if ARGV.length > 0
   input_filename = ARGV[0]
   puts "Output file was not specified. Using default."
 else
@@ -45,7 +46,6 @@ min_x = 10000
 max_x = 0
 min_y = 10000
 max_y = 0
-hole_size = 0.4 / unit_scale
 
 cur_ap = "D10"
 cur_x = 0
@@ -114,40 +114,40 @@ File.open(input_filename, 'r') do |input_file|
     #Look for aperture circle and capture data
     if data = /%AD(D\d+)C,(\d+\.?\d+)\*%/.match(line)
       puts "found aperture #{data[1]} circle with radius #{data[2]}"
-      output_file.write("module flash_#{data[1]}() {\n")
-      output_file.write("    gerb_circle(#{data[2]}, #{hole_size});\n")
+      output_file.write("module #{data[1]}_w_hole() {\n")
+      output_file.write("    gerb_circle(#{data[2].to_f * unit_scale}, hole_size);\n")
       output_file.write("}\n")
 
       output_file.write("module #{data[1]}() {\n")
-      output_file.write("    gerb_circle(#{data[2]});\n")
+      output_file.write("    gerb_circle(#{data[2].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
 
     #Look for aperture rectangle and capture data
     if data = /%AD(D\d+)R,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
       puts "found aperture #{data[1]} rectangle with X #{data[2]} and Y #{data[3]}"
-      output_file.write("module flash_#{data[1]}() {\n")
-      output_file.write("    gerb_rectangle(#{data[2]}, #{data[3]}, #{hole_size});\n")
+      output_file.write("module #{data[1]}_w_hole() {\n")
+      output_file.write("    gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale}, hole_size);\n")
       output_file.write("}\n")
 
       output_file.write("module #{data[1]}() {\n")
-      output_file.write("    gerb_rectangle(#{data[2]}, #{data[3]});\n")
+      output_file.write("    gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
 
     #Look for aperture obround and capture data
     if data = /%AD(D\d+)O,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
       puts "found aperture #{data[1]} obround with X #{data[2]} and Y #{data[3]}"
-      output_file.write("module flash_#{data[1]}() {\n")
-      output_file.write("    gerb_obround(#{data[2]}, #{data[3]});\n")
+      output_file.write("module #{data[1]} {\n")
+      output_file.write("    gerb_obround(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
 
-    #Look for aperture obround and capture data
+    #Look for aperture polygon and capture data
     if data = /%AD(D\d+)P,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
       puts "found aperture #{data[1]} polygon with pounts #{data[2]}, #{data[3]}"
-      output_file.write("module flash_#{data[1]}() {\n")
-      output_file.write("    gerb_obround(#{data[2]}, #{data[3]});\n")
+      output_file.write("module #{data[1]}() {\n")
+      output_file.write("    gerb_polygon(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
     
@@ -157,12 +157,12 @@ File.open(input_filename, 'r') do |input_file|
       cur_ap = data[1]
     end
 
-    #Look for flashes
+    #Look for flashes.  Add a fixed size hole or 0.4mm.  TODO: Import the drilling information
     if data = /X(\d+)Y(\d+)D03/.match(line)
       puts "flash #{cur_ap} at #{data[1]}, #{data[2]}"
-      cur_x = data[1].to_f / (10 ** x_dec)
-      cur_y = data[2].to_f / (10 ** y_dec)
-      flashes += "    scale(v=[#{unit_scale*a_scale},#{unit_scale*b_scale},1]) translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) flash_#{cur_ap}();\n"
+      cur_x = data[1].to_f / (10 ** x_dec) * unit_scale
+      cur_y = data[2].to_f / (10 ** y_dec) * unit_scale
+      flashes += "    translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}_w_hole();\n"
       min_x = cur_x if cur_x < min_x
       min_y = cur_y if cur_y < min_y
       max_x = cur_x if cur_x > max_x
@@ -174,14 +174,13 @@ File.open(input_filename, 'r') do |input_file|
       puts "stencil #{cur_ap} to #{data[1]}, #{data[2]}"
       save_x = cur_x
       save_y = cur_y
-      cur_x = data[1].to_f / (10 ** x_dec)
-      cur_y = data[2].to_f / (10 ** y_dec)
+      cur_x = data[1].to_f / (10 ** x_dec) * unit_scale
+      cur_y = data[2].to_f / (10 ** y_dec) * unit_scale
       stencils += <<-eos
-    scale(v=[#{unit_scale*a_scale},#{unit_scale*b_scale},1]) 
-      hull() { \n  
-        translate (v=[#{"%2.3f" % save_x}, #{"%2.3f" % save_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();\n  
-        translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();\n 
-      }\n
+      hull() {
+        translate (v=[#{"%2.3f" % save_x}, #{"%2.3f" % save_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();
+        translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();
+      }
       eos
       min_x = cur_x if cur_x < min_x
       min_y = cur_y if cur_y < min_y
@@ -192,8 +191,8 @@ File.open(input_filename, 'r') do |input_file|
     #Look for moves
     if data = /X(\d+)Y(\d+)D02/.match(line)
       puts "move to #{data[1]}, #{data[2]}"
-      cur_x = data[1].to_f / 1000
-      cur_y = data[2].to_f / 1000
+      cur_x = data[1].to_f / (10 ** x_dec) * unit_scale
+      cur_y = data[2].to_f / (10 ** y_dec) * unit_scale
     end
 
   end
@@ -202,17 +201,21 @@ end
 x = (max_x-min_x) + (min_x * 2)
 y = (max_y-min_y) + (min_y * 2)
 
-output_file.write("difference(){\n") #put following at top of file
+#TODO a_scale and b_scale need to be set
+output_file.write("\n")
+output_file.write("// Scale the board \n")
+output_file.write("scale(v=[#{a_scale},#{b_scale},1.0]) difference(){\n") #put following at top of file
 output_file.write("\n")
 output_file.write("    // First draw the solid part\n")
-output_file.write("    scale(v=[#{unit_scale*a_scale},#{unit_scale*b_scale},1]) translate(v=[#{x/2}, #{y/2},board_thickness/2]) cube (size = [#{x}, #{y}, board_thickness], center = true);\n")
+output_file.write("    translate(v=[#{x/2}, #{y/2},board_thickness/2]) cube (size = [#{x}, #{y}, board_thickness], center = true);\n")
 output_file.write("\n")
-output_file.write("    // Then subtract each aperture flash from it\n")
+output_file.write("    // Next subtract each aperture flash from it\n")
 
 # write the flashes
 output_file.write(flashes)
 
-output_file.write("    // Then subtract the stencils from it\n")
+output_file.write("\n")
+output_file.write("    // Last subtract the stencils from it\n")
 # write the stencils
 output_file.write(stencils)
 

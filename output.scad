@@ -15,8 +15,9 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $fn=20;
 
-board_thickness = 1.6;  //Change this line yourself to alter board thickness
-stencil_thickness = 0.2;  //Change this line yourself to alter gap thickness
+board_thickness = 1.6;    //Change this line yourself to alter board thickness
+stencil_thickness = 0.4;  //Change this line yourself to alter gap thickness
+hole_size = 0.4;          //Change this line yourself to alter size of the hole
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Start of aperture primitives: circle, rectangle, obround, polygon                    
@@ -125,442 +126,77 @@ module gerb_polygon (diameter, num_sides, rotation=0, hole_X=0, hole_Y=0) {
 
 // Start of aperture definitions
 
-module flash_D10() {
-    gerb_circle(0.075000, 0.015748031496062995);
+module D10_w_hole() {
+    gerb_circle(1.5999968, hole_size);
 }
 module D10() {
-    gerb_circle(0.075000);
+    gerb_circle(1.5999968);
 }
-module flash_D11() {
-    gerb_circle(0.082000, 0.015748031496062995);
+module D11_w_hole() {
+    gerb_circle(1.9049999999999998, hole_size);
 }
 module D11() {
-    gerb_circle(0.082000);
+    gerb_circle(1.9049999999999998);
 }
-module flash_D12() {
-    gerb_circle(0.067000, 0.015748031496062995);
+module D12_w_hole() {
+    gerb_circle(1.9811999999999999, hole_size);
 }
 module D12() {
-    gerb_circle(0.067000);
+    gerb_circle(1.9811999999999999);
 }
-module flash_D13() {
-    gerb_circle(0.054000, 0.015748031496062995);
+module D13_w_hole() {
+    gerb_rectangle(1.5999968, 1.5999968, hole_size);
 }
 module D13() {
-    gerb_circle(0.054000);
+    gerb_rectangle(1.5999968, 1.5999968);
 }
-module flash_D14() {
-    gerb_circle(0.140000, 0.015748031496062995);
+module D14_w_hole() {
+    gerb_rectangle(1.9049999999999998, 1.9049999999999998, hole_size);
 }
 module D14() {
-    gerb_circle(0.140000);
+    gerb_rectangle(1.9049999999999998, 1.9049999999999998);
 }
-module flash_D15() {
-    gerb_rectangle(0.075000, 0.075000, 0.015748031496062995);
+module D15_w_hole() {
+    gerb_rectangle(1.9811999999999999, 1.9811999999999999, hole_size);
 }
 module D15() {
-    gerb_rectangle(0.075000, 0.075000);
+    gerb_rectangle(1.9811999999999999, 1.9811999999999999);
 }
-module flash_D16() {
-    gerb_rectangle(0.082000, 0.082000, 0.015748031496062995);
+module D16_w_hole() {
+    gerb_circle(0.6096, hole_size);
 }
 module D16() {
-    gerb_rectangle(0.082000, 0.082000);
+    gerb_circle(0.6096);
 }
-module flash_D17() {
-    gerb_rectangle(0.067000, 0.067000, 0.015748031496062995);
-}
-module D17() {
-    gerb_rectangle(0.067000, 0.067000);
-}
-module flash_D18() {
-    gerb_rectangle(0.054000, 0.054000, 0.015748031496062995);
-}
-module D18() {
-    gerb_rectangle(0.054000, 0.054000);
-}
-module flash_D19() {
-    gerb_circle(0.033333, 0.015748031496062995);
-}
-module D19() {
-    gerb_circle(0.033333);
-}
-difference(){
+
+// Scale the board 
+scale(v=[1.0,1.0,1.0]) difference(){
 
     // First draw the solid part
-    scale(v=[25.4,25.4,1]) translate(v=[1.3110000000000002, 0.7879999999999999,board_thickness/2]) cube (size = [2.6220000000000003, 1.5759999999999998, board_thickness], center = true);
+    translate(v=[9.601199999999999, 11.252199999999998,board_thickness/2]) cube (size = [19.202399999999997, 22.504399999999997, board_thickness], center = true);
 
-    // Then subtract each aperture flash from it
-    scale(v=[25.4,25.4,1]) translate (v=[0.583, 1.154, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.683, 1.154, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.587, 0.751, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.487, 0.751, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.487, 0.931, board_thickness - (stencil_thickness/2)]) flash_D11();
-    scale(v=[25.4,25.4,1]) translate (v=[0.587, 0.931, board_thickness - (stencil_thickness/2)]) flash_D11();
-    scale(v=[25.4,25.4,1]) translate (v=[0.687, 0.931, board_thickness - (stencil_thickness/2)]) flash_D11();
-    scale(v=[25.4,25.4,1]) translate (v=[1.167, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.167, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.267, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.267, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.367, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.367, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.467, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.467, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.567, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.567, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.667, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.667, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.767, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.767, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.867, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.867, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.967, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.967, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.067, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.067, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.167, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.167, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.267, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.267, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.367, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.367, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.467, 0.832, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.467, 1.132, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.038, 0.240, board_thickness - (stencil_thickness/2)]) flash_D12();
-    scale(v=[25.4,25.4,1]) translate (v=[1.038, 0.640, board_thickness - (stencil_thickness/2)]) flash_D12();
-    scale(v=[25.4,25.4,1]) translate (v=[1.039, 1.082, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[1.039, 0.826, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.862, 1.082, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.862, 0.826, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.174, 0.406, board_thickness - (stencil_thickness/2)]) flash_D13();
-    scale(v=[25.4,25.4,1]) translate (v=[2.174, 0.106, board_thickness - (stencil_thickness/2)]) flash_D13();
-    scale(v=[25.4,25.4,1]) translate (v=[1.974, 0.109, board_thickness - (stencil_thickness/2)]) flash_D13();
-    scale(v=[25.4,25.4,1]) translate (v=[1.974, 0.409, board_thickness - (stencil_thickness/2)]) flash_D13();
-    scale(v=[25.4,25.4,1]) translate (v=[1.973, 0.561, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[2.165, 0.561, board_thickness - (stencil_thickness/2)]) flash_D10();
-    scale(v=[25.4,25.4,1]) translate (v=[0.345, 1.230, board_thickness - (stencil_thickness/2)]) flash_D14();
-    scale(v=[25.4,25.4,1]) translate (v=[0.345, 1.470, board_thickness - (stencil_thickness/2)]) flash_D14();
-    scale(v=[25.4,25.4,1]) translate (v=[0.155, 1.350, board_thickness - (stencil_thickness/2)]) flash_D14();
-    scale(v=[25.4,25.4,1]) translate (v=[0.583, 1.154, board_thickness - (stencil_thickness/2)]) flash_D15();
-    scale(v=[25.4,25.4,1]) translate (v=[0.587, 0.751, board_thickness - (stencil_thickness/2)]) flash_D15();
-    scale(v=[25.4,25.4,1]) translate (v=[0.487, 0.931, board_thickness - (stencil_thickness/2)]) flash_D16();
-    scale(v=[25.4,25.4,1]) translate (v=[1.167, 0.832, board_thickness - (stencil_thickness/2)]) flash_D15();
-    scale(v=[25.4,25.4,1]) translate (v=[1.038, 0.240, board_thickness - (stencil_thickness/2)]) flash_D17();
-    scale(v=[25.4,25.4,1]) translate (v=[2.174, 0.406, board_thickness - (stencil_thickness/2)]) flash_D18();
-    scale(v=[25.4,25.4,1]) translate (v=[1.974, 0.109, board_thickness - (stencil_thickness/2)]) flash_D18();
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.587, 0.899, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.587, 0.781, board_thickness - (stencil_thickness/2)]) D19();
- 
+    // Next subtract each aperture flash from it
+    translate (v=[14.681, 6.223, board_thickness - (stencil_thickness/2)]) D10_w_hole();
+    translate (v=[14.681, 8.712, board_thickness - (stencil_thickness/2)]) D10_w_hole();
+    translate (v=[4.521, 16.332, board_thickness - (stencil_thickness/2)]) D11_w_hole();
+    translate (v=[14.681, 16.332, board_thickness - (stencil_thickness/2)]) D11_w_hole();
+    translate (v=[7.061, 6.172, board_thickness - (stencil_thickness/2)]) D12_w_hole();
+    translate (v=[4.521, 6.172, board_thickness - (stencil_thickness/2)]) D12_w_hole();
+    translate (v=[14.681, 6.223, board_thickness - (stencil_thickness/2)]) D13_w_hole();
+    translate (v=[4.521, 16.332, board_thickness - (stencil_thickness/2)]) D14_w_hole();
+    translate (v=[7.061, 6.172, board_thickness - (stencil_thickness/2)]) D15_w_hole();
+
+    // Last subtract the stencils from it
+      hull() {
+        translate (v=[4.521, 6.833, board_thickness - (stencil_thickness/2)]) D16();
+        translate (v=[4.521, 15.697, board_thickness - (stencil_thickness/2)]) D16();
       }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.487, 0.781, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.487, 0.899, board_thickness - (stencil_thickness/2)]) D19();
- 
+      hull() {
+        translate (v=[14.097, 6.198, board_thickness - (stencil_thickness/2)]) D16();
+        translate (v=[7.696, 6.172, board_thickness - (stencil_thickness/2)]) D16();
       }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[2.078, 0.804, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[2.155, 0.590, board_thickness - (stencil_thickness/2)]) D19();
- 
+      hull() {
+        translate (v=[14.681, 9.296, board_thickness - (stencil_thickness/2)]) D16();
+        translate (v=[14.681, 16.332, board_thickness - (stencil_thickness/2)]) D16();
       }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.973, 0.592, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.968, 0.802, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[2.172, 0.434, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[2.167, 0.531, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.974, 0.437, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.973, 0.531, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[2.001, 0.109, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[2.146, 0.107, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.584, 1.123, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.586, 0.963, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.684, 1.123, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.686, 0.963, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.069, 0.827, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.137, 0.831, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.008, 0.240, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.689, 0.242, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.689, 0.242, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.687, 0.899, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.767, 0.802, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.769, 0.238, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.784, 0.858, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.950, 1.107, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.587, 0.720, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.593, 0.116, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.593, 0.116, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.946, 0.110, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.583, 1.184, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.582, 1.313, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.868, 0.802, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.871, 0.272, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.864, 1.310, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.862, 1.112, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.871, 0.272, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.959, 0.132, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.582, 1.313, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.864, 1.310, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.039, 0.795, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.038, 0.669, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.769, 0.238, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.067, 0.240, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.473, 0.960, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.365, 1.188, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.565, 1.178, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.373, 1.433, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.306, 1.445, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.194, 1.375, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.862, 1.112, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.863, 1.309, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.771, 1.313, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.768, 1.163, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.863, 1.309, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.771, 1.313, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.898, 1.132, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.937, 1.132, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[1.053, 1.055, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.153, 0.859, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.778, 0.416, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[1.013, 0.257, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.766, 1.057, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.778, 0.416, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.703, 1.131, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.766, 1.057, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
-    scale(v=[25.4,25.4,1]) 
-      hull() { 
-  
-        translate (v=[0.862, 1.051, board_thickness - (stencil_thickness/2)]) D19();
-  
-        translate (v=[0.862, 0.856, board_thickness - (stencil_thickness/2)]) D19();
- 
-      }
-
 }
