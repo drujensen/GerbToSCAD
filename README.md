@@ -9,6 +9,6 @@ This project is to convert a RS-274X extended Gerber Solder Stencil into a SCAD 
 
 Credits go to https://github.com/bluecoast/SolderSCAD for a good starting point.
 
-Usage: GerbPaintSCAD {inputfile} {optional outputfile}
+Usage: GerbPaintSCAD {inputfile} {outputfile}
 
 Ruby 1.9.2
