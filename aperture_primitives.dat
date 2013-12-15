@@ -16,8 +16,8 @@
 $fn=20;
 
 board_thickness = 1.6;    //Change this line yourself to alter board thickness
-stencil_thickness = 0.4;  //Change this line yourself to alter gap thickness
-hole_size = 0.4;          //Change this line yourself to alter size of the hole
+stencil_thickness = 1;  //Change this line yourself to alter gap thickness
+hole_size = 1;          //Change this line yourself to alter size of the hole
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Start of aperture primitives: circle, rectangle, obround, polygon                    

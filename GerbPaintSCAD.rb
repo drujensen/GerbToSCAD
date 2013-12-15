@@ -145,7 +145,7 @@ File.open(input_filename, 'r') do |input_file|
 
     #Look for aperture polygon and capture data
     if data = /%AD(D\d+)P,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
-      puts "found aperture #{data[1]} polygon with pounts #{data[2]}, #{data[3]}"
+      puts "found aperture #{data[1]} polygon with points #{data[2]}, #{data[3]}"
       output_file.write("module #{data[1]}() {\n")
       output_file.write("    gerb_polygon(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
@@ -157,7 +157,7 @@ File.open(input_filename, 'r') do |input_file|
       cur_ap = data[1]
     end
 
-    #Look for flashes.  Add a fixed size hole or 0.4mm.  TODO: Import the drilling information
+    #Look for flashes.  Add a fixed size hole.  TODO: Import the drilling information
     if data = /X(\d+)Y(\d+)D03/.match(line)
       puts "flash #{cur_ap} at #{data[1]}, #{data[2]}"
       cur_x = data[1].to_f / (10 ** x_dec) * unit_scale
