@@ -1,4 +1,4 @@
-GerbPaintSCAD
+GerbToSCAD
 ==========
 
 Jerrill Johnson from the G+ 3D community provided the idea of using a simple process to create PCB boards using conductive paint.  Watch the video to see how this process is performed.
