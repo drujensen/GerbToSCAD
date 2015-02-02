@@ -48,6 +48,8 @@ min_y = 10000
 max_y = 0
 
 cur_ap = "D10"
+ap_list = []
+too_small = 0.01
 cur_x = 0
 cur_y = 0
 
@@ -113,6 +115,11 @@ File.open(input_filename, 'r') do |input_file|
     
     #Look for aperture circle and capture data
     if data = /%AD(D\d+)C,(\d+\.?\d+)\*%/.match(line)
+      if (data[2].to_f < too_small)
+        puts "Aperture too small. skipping..."
+        next
+      end
+      ap_list << data[1]
       puts "found aperture #{data[1]} circle with radius #{data[2]}"
       output_file.write("module #{data[1]}_w_hole() {\n")
       output_file.write("    gerb_circle(#{data[2].to_f * unit_scale}, hole_size);\n")
@@ -125,6 +132,11 @@ File.open(input_filename, 'r') do |input_file|
 
     #Look for aperture rectangle and capture data
     if data = /%AD(D\d+)R,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
+      if (data[2].to_f < too_small || data[3].to_f < too_small)
+        puts "Aperture too small. skipping..."
+        next
+      end
+      ap_list << data[1]     
       puts "found aperture #{data[1]} rectangle with X #{data[2]} and Y #{data[3]}"
       output_file.write("module #{data[1]}_w_hole() {\n")
       output_file.write("    gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale}, hole_size);\n")
@@ -137,6 +149,11 @@ File.open(input_filename, 'r') do |input_file|
 
     #Look for aperture obround and capture data
     if data = /%AD(D\d+)O,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
+      if (data[2].to_f < too_small || data[3].to_f < too_small)
+        puts "Aperture too small. skipping..."
+        next
+      end
+      ap_list << data[1]     
       puts "found aperture #{data[1]} obround with X #{data[2]} and Y #{data[3]}"
       output_file.write("module #{data[1]} {\n")
       output_file.write("    gerb_obround(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
@@ -145,6 +162,11 @@ File.open(input_filename, 'r') do |input_file|
 
     #Look for aperture polygon and capture data
     if data = /%AD(D\d+)P,(\d+\.?\d+)X(\d+\.?\d+)\*%/.match(line)
+      if (data[2].to_f < too_small || data[3].to_f < too_small)
+        puts "Aperture too small. skipping..."
+        next
+      end
+      ap_list << data[1]     
       puts "found aperture #{data[1]} polygon with points #{data[2]}, #{data[3]}"
       output_file.write("module #{data[1]}() {\n")
       output_file.write("    gerb_polygon(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
@@ -155,6 +177,11 @@ File.open(input_filename, 'r') do |input_file|
     if data = /^G54(D\d+)/.match(line)
       puts "change current aperture #{cur_ap} to #{data[1]}"
       cur_ap = data[1]
+    end
+
+    if not ap_list.include? cur_ap
+      puts "aperture too small, skipping..."
+      next
     end
 
     #Look for flashes.  Add a fixed size hole.  TODO: Import the drilling information
