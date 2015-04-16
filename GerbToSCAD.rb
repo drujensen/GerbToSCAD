@@ -54,6 +54,7 @@ cur_x = 0
 cur_y = 0
 
 flashes = ""
+holes = ""
 stencils = ""
 
 output_file = File.open(output_filename, 'w')
@@ -122,11 +123,11 @@ File.open(input_filename, 'r') do |input_file|
       ap_list << data[1]
       puts "found aperture #{data[1]} circle with radius #{data[2]}"
       output_file.write("module #{data[1]}_w_hole() {\n")
-      output_file.write("    gerb_circle(#{data[2].to_f * unit_scale}, hole_size);\n")
+      output_file.write("  gerb_circle(#{data[2].to_f * unit_scale}, hole_size);\n")
       output_file.write("}\n")
 
       output_file.write("module #{data[1]}() {\n")
-      output_file.write("    gerb_circle(#{data[2].to_f * unit_scale});\n")
+      output_file.write("  gerb_circle(#{data[2].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
 
@@ -139,11 +140,11 @@ File.open(input_filename, 'r') do |input_file|
       ap_list << data[1]     
       puts "found aperture #{data[1]} rectangle with X #{data[2]} and Y #{data[3]}"
       output_file.write("module #{data[1]}_w_hole() {\n")
-      output_file.write("    gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale}, hole_size);\n")
+      output_file.write("  gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale}, hole_size);\n")
       output_file.write("}\n")
 
       output_file.write("module #{data[1]}() {\n")
-      output_file.write("    gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
+      output_file.write("  gerb_rectangle(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
 
@@ -156,7 +157,7 @@ File.open(input_filename, 'r') do |input_file|
       ap_list << data[1]     
       puts "found aperture #{data[1]} obround with X #{data[2]} and Y #{data[3]}"
       output_file.write("module #{data[1]} {\n")
-      output_file.write("    gerb_obround(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
+      output_file.write("  gerb_obround(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
 
@@ -169,7 +170,7 @@ File.open(input_filename, 'r') do |input_file|
       ap_list << data[1]     
       puts "found aperture #{data[1]} polygon with points #{data[2]}, #{data[3]}"
       output_file.write("module #{data[1]}() {\n")
-      output_file.write("    gerb_polygon(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
+      output_file.write("  gerb_polygon(#{data[2].to_f * unit_scale}, #{data[3].to_f * unit_scale});\n")
       output_file.write("}\n")
     end
     
@@ -189,7 +190,8 @@ File.open(input_filename, 'r') do |input_file|
       puts "flash #{cur_ap} at #{data[1]}, #{data[2]}"
       cur_x = data[1].to_f / (10 ** x_dec) * unit_scale
       cur_y = data[2].to_f / (10 ** y_dec) * unit_scale
-      flashes += "    translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}_w_hole();\n"
+      holes += "    translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}_w_hole();\n"
+      flashes += "    translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();\n"
       min_x = cur_x if cur_x < min_x
       min_y = cur_y if cur_y < min_y
       max_x = cur_x if cur_x > max_x
@@ -204,10 +206,10 @@ File.open(input_filename, 'r') do |input_file|
       cur_x = data[1].to_f / (10 ** x_dec) * unit_scale
       cur_y = data[2].to_f / (10 ** y_dec) * unit_scale
       stencils += <<-eos
-      hull() {
-        translate (v=[#{"%2.3f" % save_x}, #{"%2.3f" % save_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();
-        translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();
-      }
+    hull() {
+      translate (v=[#{"%2.3f" % save_x}, #{"%2.3f" % save_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();
+      translate (v=[#{"%2.3f" % cur_x}, #{"%2.3f" % cur_y}, board_thickness - (stencil_thickness/2)]) #{cur_ap}();
+    }
       eos
       min_x = cur_x if cur_x < min_x
       min_y = cur_y if cur_y < min_y
@@ -230,23 +232,46 @@ y = (max_y-min_y) + (min_y * 2)
 
 #TODO a_scale and b_scale need to be set
 output_file.write("\n")
-output_file.write("// Scale the board \n")
-output_file.write("scale(v=[#{a_scale},#{b_scale},1.0]) difference(){\n") #put following at top of file
+output_file.write("module board() {\n")
+output_file.write("  // scale the board \n")
+output_file.write("  scale(v=[#{a_scale},#{b_scale},1.0]) difference(){\n") #put following at top of file
 output_file.write("\n")
-output_file.write("    // First draw the solid part\n")
+output_file.write("    // draw the solid part\n")
 output_file.write("    translate(v=[#{x/2}, #{y/2},board_thickness/2]) cube (size = [#{x}, #{y}, board_thickness], center = true);\n")
 output_file.write("\n")
-output_file.write("    // Next subtract each aperture flash from it\n")
+output_file.write("    // subtract each aperture flash with holes\n")
 
 # write the flashes
-output_file.write(flashes)
+output_file.write(holes)
 
 output_file.write("\n")
-output_file.write("    // Last subtract the stencils from it\n")
+output_file.write("    // subtract the stencils\n")
 # write the stencils
 output_file.write(stencils)
 
+output_file.write("  }\n")
 output_file.write("}\n")
+
+output_file.write("\n")
+output_file.write("module stencil() {\n")
+output_file.write("  // Scale the board \n")
+output_file.write("  scale(v=[#{a_scale},#{b_scale},1.0]) union() {\n") #put following at top of file
+
+output_file.write("\n")
+output_file.write("    // add the flashes\n")
+output_file.write(flashes)
+output_file.write("    // add the stencils\n")
+# write the stencils
+output_file.write(stencils)
+
+output_file.write("  }\n")
+output_file.write("}\n")
+
+output_file.write("// Generate the Board\n")
+output_file.write("board();\n\n")
+output_file.write("// Uncomment to generate the Stencil\n")
+output_file.write("// stencil();\n\n")
+
 # close the output file
 puts "Done!"
 output_file.close

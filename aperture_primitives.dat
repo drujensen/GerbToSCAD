@@ -15,9 +15,9 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $fn=20;
 
-board_thickness = 1.6;    //Change this line yourself to alter board thickness
-stencil_thickness = 1;  //Change this line yourself to alter gap thickness
-hole_size = 1;          //Change this line yourself to alter size of the hole
+board_thickness = 2.0;    //Change this line yourself to alter board thickness
+stencil_thickness = 0.4;  //Change this line yourself to alter gap thickness
+hole_size = 1.6;          //Change this line yourself to alter size of the hole
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Start of aperture primitives: circle, rectangle, obround, polygon                    
