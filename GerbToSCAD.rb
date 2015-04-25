@@ -59,12 +59,6 @@ stencils = ""
 
 output_file = File.open(output_filename, 'w')
 
-output_file.write("// Generate the Board\n")
-output_file.write("board();\n\n")
-output_file.write("// Uncomment to generate the Stencil\n")
-output_file.write("// stencil();\n\n")
-output_file.write("\n")
-
 # write the aperture modules to the output file
 puts "Creating the apertures in: #{aperture_filename}"
 output_file.write(File.read(aperture_filename))

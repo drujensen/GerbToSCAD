@@ -20,6 +20,12 @@ stencil_thickness = 0.4;  //Change to alter gap thickness
 hole_size = 1.6;          //Change to alter size of the hole
 stand_height = 4.0;       //Change to alter the stand height
 
+// Generate the Board
+board();
+
+// Generate the Stencil
+// stencil();
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Start of aperture primitives: circle, rectangle, obround, polygon                    
 // These accept the same parameters in the same order as Gerber aperture definitions    
