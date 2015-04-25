@@ -15,9 +15,10 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 $fn=20;
 
-board_thickness = 2.0;    //Change this line yourself to alter board thickness
-stencil_thickness = 0.4;  //Change this line yourself to alter gap thickness
-hole_size = 1.6;          //Change this line yourself to alter size of the hole
+board_thickness = 2.0;    //Change to alter board thickness
+stencil_thickness = 0.4;  //Change to alter gap thickness
+hole_size = 1.6;          //Change to alter size of the hole
+stand_height = 4.0;       //Change to alter the stand height
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 // Start of aperture primitives: circle, rectangle, obround, polygon                    
@@ -117,6 +118,28 @@ module gerb_polygon (diameter, num_sides, rotation=0, hole_X=0, hole_Y=0) {
       translate([0,0,-board_thickness/2]) cube (size = [hole_X, hole_Y, board_thickness + .1], center = true);
     } 
   } 
+}
+
+// A stand to allow us to hold the board so we can print the stencil at the
+// correct height.
+
+module stand (x, y, z) {
+	translate ([x/2,y/2,-(board_thickness+stand_height/2)])  difference() {
+		cube (size = [2, 2, board_thickness+stand_height], center = true);
+		translate([-1/2,-1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
+	}
+	translate ([-x/2,y/2,-(board_thickness+stand_height/2)])  difference() {
+		cube (size = [2, 2, board_thickness+stand_height], center = true);
+		translate([1/2,-1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
+	}
+	translate ([-x/2,-y/2,-(board_thickness+stand_height/2)])  difference() {
+		cube (size = [2, 2, board_thickness+stand_height], center = true);
+		translate([1/2,1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
+	}
+	translate ([x/2,-y/2,-(board_thickness+stand_height/2)])  difference() {
+		cube (size = [2, 2, board_thickness+stand_height], center = true);
+		translate([-1/2,1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
+	}
 }
 
 

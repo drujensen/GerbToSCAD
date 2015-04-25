@@ -59,6 +59,12 @@ stencils = ""
 
 output_file = File.open(output_filename, 'w')
 
+output_file.write("// Generate the Board\n")
+output_file.write("board();\n\n")
+output_file.write("// Uncomment to generate the Stencil\n")
+output_file.write("// stencil();\n\n")
+output_file.write("\n")
+
 # write the aperture modules to the output file
 puts "Creating the apertures in: #{aperture_filename}"
 output_file.write(File.read(aperture_filename))
@@ -231,7 +237,6 @@ x = (max_x-min_x) + (min_x * 2)
 y = (max_y-min_y) + (min_y * 2)
 
 #TODO a_scale and b_scale need to be set
-output_file.write("\n")
 output_file.write("module board() {\n")
 output_file.write("  // scale the board \n")
 output_file.write("  scale(v=[#{a_scale},#{b_scale},1.0]) difference(){\n") #put following at top of file
@@ -257,6 +262,8 @@ output_file.write("module stencil() {\n")
 output_file.write("  // Scale the board \n")
 output_file.write("  scale(v=[#{a_scale},#{b_scale},1.0]) union() {\n") #put following at top of file
 
+output_file.write("    // create the stand\n")
+output_file.write("    translate(v=[#{x/2}, #{y/2},board_thickness/2]) stand (#{x}, #{y}, board_thickness);\n")
 output_file.write("\n")
 output_file.write("    // add the flashes\n")
 output_file.write(flashes)
@@ -266,11 +273,6 @@ output_file.write(stencils)
 
 output_file.write("  }\n")
 output_file.write("}\n")
-
-output_file.write("// Generate the Board\n")
-output_file.write("board();\n\n")
-output_file.write("// Uncomment to generate the Stencil\n")
-output_file.write("// stencil();\n\n")
 
 # close the output file
 puts "Done!"
