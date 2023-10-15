@@ -27,9 +27,9 @@ board();
 // stencil();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// Start of aperture primitives: circle, rectangle, obround, polygon                    
-// These accept the same parameters in the same order as Gerber aperture definitions    
-// 'drill' holes in pads will be rendered if specified even though they are unprintable 
+// Start of aperture primitives: circle, rectangle, obround, polygon
+// These accept the same parameters in the same order as Gerber aperture definitions
+// 'drill' holes in pads will be rendered if specified even though they are unprintable
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Circle aperture type
@@ -44,11 +44,11 @@ module gerb_circle (diameter, hole_X=0, hole_Y=0) {
     }
   }
   else {
-    union(){  
+    union(){
       cylinder (r = diameter/2, h=stencil_thickness + .1, center = true);
       translate([0,0,-board_thickness/2]) cube (size = [hole_X, hole_Y, board_thickness + .1], center = true);
-    } 
-  } 
+    }
+  }
 }
 
 // Rectangle aperture type
@@ -59,7 +59,7 @@ module gerb_rectangle (diam_X, diam_Y, hole_X=0, hole_Y=0) {
   else if (hole_Y == 0) {
     union(){
       cube (size = [diam_X, diam_Y, stencil_thickness + .1], center = true);
-      translate([0,0,-board_thickness/2]) cylinder (r = hole_X/2, h=board_thickness + .1, center = true);  
+      translate([0,0,-board_thickness/2]) cylinder (r = hole_X/2, h=board_thickness + .1, center = true);
     }
   }
   else  {
@@ -78,7 +78,7 @@ module gerb_obround_primitive (diam_X, diam_Y) {
       translate(v = [0, (diam_Y - diam_X) / 2, 0]) cylinder (r = diam_X/2, h=stencil_thickness, center = true);
       translate(v = [0, -((diam_Y - diam_X) / 2), 0]) cylinder (r = diam_X/2, h=stencil_thickness, center = true);
     }
-    
+
   }
   else {  // diam_X is larger
     union(){
@@ -96,7 +96,7 @@ module gerb_obround (diam_X, diam_Y, hole_X=0, hole_Y=0) {
   else if (hole_Y == 0) {
     union(){
       gerb_obround_primitive(diam_X, diam_Y);
-      translate([0,0,-board_thickness/2]) cylinder (r = hole_X/2, h=board_thickness + .1, center = true);  
+      translate([0,0,-board_thickness/2]) cylinder (r = hole_X/2, h=board_thickness + .1, center = true);
     }
   }
   else  {
@@ -119,38 +119,32 @@ module gerb_polygon (diameter, num_sides, rotation=0, hole_X=0, hole_Y=0) {
     }
   }
   else {
-    union(){  
+    union(){
       rotate (a=[0,0,rotation]) cylinder (r = diameter/2, h=stencil_thickness + .1, $fn = num_sides, center = true);
       translate([0,0,-board_thickness/2]) cube (size = [hole_X, hole_Y, board_thickness + .1], center = true);
-    } 
-  } 
+    }
+  }
+}
+
+// The main board
+
+module block(x, y, z) {
+  translate(v=[x/2, y/2,board_thickness/2]) cube (size = [x, y, board_thickness], center = true);
 }
 
 // A stand to allow us to hold the board so we can print the stencil at the
 // correct height.
 
 module stand (x, y, z) {
-	translate ([x/2,y/2,-(board_thickness+stand_height/2)])  difference() {
-		cube (size = [2, 2, board_thickness+stand_height], center = true);
-		translate([-1/2,-1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
-	}
-	translate ([-x/2,y/2,-(board_thickness+stand_height/2)])  difference() {
-		cube (size = [2, 2, board_thickness+stand_height], center = true);
-		translate([1/2,-1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
-	}
-	translate ([-x/2,-y/2,-(board_thickness+stand_height/2)])  difference() {
-		cube (size = [2, 2, board_thickness+stand_height], center = true);
-		translate([1/2,1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
-	}
-	translate ([x/2,-y/2,-(board_thickness+stand_height/2)])  difference() {
-		cube (size = [2, 2, board_thickness+stand_height], center = true);
-		translate([-1/2,1/2,1+stand_height/2]) cube (size = [1.1, 1.1, 1.1], center = true);
-	}
+  translate ([x/2,y/2, (z/2-stand_height) ])  difference() {
+    cube (size = [x+1.2, y+1.2, z+stand_height], center = true);
+    cube (size = [x-1.2, y-1.2, z+stand_height+.1], center = true);
+    translate([0,0, (z+stand_height)/2]) cube (size = [x+.2, y+.2, stencil_thickness], center = true);
+  }
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
-// End of aperture primitives -- everything below is generated from the input gerber    
+// End of aperture primitives -- everything below is generated from the input gerber
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Start of aperture definitions
